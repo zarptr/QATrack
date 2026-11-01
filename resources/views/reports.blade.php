@@ -36,7 +36,7 @@
                         "inverse-primary": "#e4e4e7",
                         "on-surface": "#18181b",
                         "surface-tint": "#1e40af",
-                        "background": "#ffffff",
+                        "background": "#F8FAFF",
                         "surface-dim": "#f4f4f5",
                         "secondary-fixed-dim": "#e4e4e7",
                         "on-secondary-container": "#1e3a8a",
@@ -163,13 +163,16 @@
         .material-symbols-outlined[data-weight="fill"] {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        body, main { background-color: #F8FAFF !important; margin: 0; padding: 0; }
+        body { overflow-x: hidden; }
+        .bg-surface, .bg-surface-container-lowest, .card-white { background-color: #ffffff !important; }
         /* Soft shadows for depth */
         .shadow-level-1 {
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
     </style>
 </head>
-<body class="flex bg-background text-on-background font-body-md antialiased h-screen overflow-hidden">
+<body class="flex text-on-background font-body-md antialiased h-screen overflow-hidden" style="background-color: #F8FAFF;">
     @include('layouts.sidebar')
 
     <!-- Main Content Area Wrapper -->
@@ -177,7 +180,7 @@
         @include('layouts.header', ['breadcrumb' => 'Reports & Export'])
 
         <!-- Canvas / Content -->
-        <main class="flex-1 overflow-y-auto mt-16 p-section-padding bg-background">
+        <main class="flex-1 overflow-y-auto mt-16 p-section-padding" style="background-color: #F8FAFF;">
             <div class="max-w-7xl mx-auto space-y-container-gap">
                 <!-- Page Header & Filters -->
                 <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -187,7 +190,7 @@
                     </div>
 
                     <!-- Interactive Filter Controls -->
-                    <form method="GET" action="{{ route('reports') }}" class="flex flex-wrap items-center gap-2.5 bg-surface-container-lowest p-2 rounded-xl shadow-level-1 border border-outline-variant">
+                    <form method="GET" action="{{ route('reports') }}" class="flex flex-wrap items-center gap-2.5 bg-white p-2.5 rounded-xl shadow-xs border border-slate-200/80">
                         <div class="flex items-center gap-1.5 px-2 border-r border-outline-variant pr-3 text-on-surface-variant">
                             <span class="material-symbols-outlined text-[18px] text-outline">tune</span>
                             <span class="text-label-md font-label-md uppercase tracking-wider text-xs font-semibold text-secondary">Filter</span>
@@ -242,7 +245,7 @@
                 <!-- Summary Statistics Bento Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-element-gap">
                     <!-- Stat 1 -->
-                    <div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-level-1 border border-outline-variant/20 flex flex-col justify-between h-32">
+                    <div class="bg-white p-6 rounded-[12px] shadow-xs border border-slate-200/80 flex flex-col justify-between h-32">
                         <div class="flex justify-between items-start">
                             <p class="text-label-md font-label-md text-secondary uppercase tracking-wider">Avg Resolution Time</p>
                             <span class="material-symbols-outlined text-primary bg-primary-container/10 p-1.5 rounded-full">timer</span>
@@ -253,7 +256,7 @@
                         </div>
                     </div>
                     <!-- Stat 2 -->
-                    <div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-level-1 border border-outline-variant/20 flex flex-col justify-between h-32">
+                    <div class="bg-white p-6 rounded-[12px] shadow-xs border border-slate-200/80 flex flex-col justify-between h-32">
                         <div class="flex justify-between items-start">
                             <p class="text-label-md font-label-md text-secondary uppercase tracking-wider">Total Bugs Logged</p>
                             <span class="material-symbols-outlined text-error bg-error-container/30 p-1.5 rounded-full">bug_report</span>
@@ -269,7 +272,7 @@
                         </div>
                     </div>
                     <!-- Stat 3 -->
-                    <div class="bg-surface-container-lowest p-6 rounded-[12px] shadow-level-1 border border-outline-variant/20 flex flex-col justify-between h-32">
+                    <div class="bg-white p-6 rounded-[12px] shadow-xs border border-slate-200/80 flex flex-col justify-between h-32">
                         <div class="flex justify-between items-start">
                             <p class="text-label-md font-label-md text-secondary uppercase tracking-wider">Bugs per Developer</p>
                             <span class="material-symbols-outlined text-tertiary bg-tertiary-container/10 p-1.5 rounded-full">person</span>
@@ -282,16 +285,16 @@
                 </div>
 
                 <!-- Export Section -->
-                <div class="bg-surface-container-lowest rounded-[12px] shadow-level-1 border border-outline-variant/20 overflow-hidden">
-                    <div class="p-6 border-b border-outline-variant/20 bg-surface-bright flex justify-between items-center">
+                <div class="bg-white rounded-[12px] shadow-xs border border-slate-200/80 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
                         <div>
                             <h3 class="text-headline-sm font-headline-sm text-on-surface">Data Export</h3>
                             <p class="text-body-md font-body-md text-on-surface-variant mt-1">Generate comprehensive reports for stakeholder review.</p>
                         </div>
                     </div>
-                    <div class="p-8 flex flex-col items-center justify-center bg-surface">
+                    <div class="p-8 flex flex-col items-center justify-center bg-white">
                         <!-- Excel Export Card -->
-                        <div class="flex flex-col items-center p-8 border border-emerald-500/20 rounded-2xl bg-emerald-50/40 hover:bg-emerald-50/70 transition-all max-w-md w-full shadow-xs text-center">
+                        <div class="flex flex-col items-center p-8 border border-emerald-500/20 rounded-2xl bg-white hover:bg-emerald-50/30 transition-all max-w-md w-full shadow-xs text-center">
                             <div class="w-16 h-16 rounded-2xl bg-emerald-600 text-white flex items-center justify-center mb-4 shadow-md shadow-emerald-600/20 transition-transform">
                                 <span class="material-symbols-outlined text-[32px]">table_chart</span>
                             </div>

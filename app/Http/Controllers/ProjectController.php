@@ -21,7 +21,7 @@ class ProjectController extends Controller
                 ->orWhere('description', 'like', '%'.$request->search.'%');
         }
 
-        $projects = $query->withCount([
+        $projects = $query->with('creator')->withCount([
             'bugs',
             'bugs as open_bugs_count' => function ($q) use ($user) {
                 $q->where('status', 'open');
@@ -62,7 +62,7 @@ class ProjectController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:projects,name'],
+            'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
@@ -78,6 +78,7 @@ class ProjectController extends Controller
      */
     public function show(Request $request, Project $project)
     {
+        $project->load('creator');
         $user = $request->user();
         $query = $project->bugs();
 
@@ -99,7 +100,10 @@ class ProjectController extends Controller
             $query->where('developer', $request->developer);
         }
 
-        $bugs = $query->orderBy('created_at', 'desc')->get();
+        // Bug automatically rises to top if priority is high/important (P1 Critical -> P2 High -> P3 Medium)
+        $bugs = $query->orderByRaw("CASE priority WHEN 'p1' THEN 1 WHEN 'p2' THEN 2 WHEN 'p3' THEN 3 ELSE 4 END ASC")
+            ->orderBy('created_at', 'desc')
+            ->get();
         $developers = User::where('role', 'developer')->orderBy('name')->get();
 
         return view('projects.show', compact('project', 'bugs', 'developers'));

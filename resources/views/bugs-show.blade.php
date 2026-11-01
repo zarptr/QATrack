@@ -35,7 +35,7 @@
                         "inverse-primary": "#e4e4e7",
                         "on-surface": "#18181b",
                         "surface-tint": "#1e40af",
-                        "background": "#ffffff",
+                        "background": "#F8FAFF",
                         "surface-dim": "#f4f4f5",
                         "secondary-fixed-dim": "#e4e4e7",
                         "on-secondary-container": "#1e3a8a",
@@ -96,13 +96,40 @@
             }
         }
     </script>
+    <style>
+        body, main { background-color: #F8FAFF !important; }
+        .bg-surface-container-lowest, .bg-surface, .card-white { background-color: #ffffff !important; }
+    </style>
 </head>
-<body class="bg-background text-on-background font-body-md antialiased min-h-screen">
+<body class="text-on-background font-body-md antialiased min-h-screen" style="background-color: #F8FAFF;">
     @include('layouts.sidebar')
     @include('layouts.header')
 
     <!-- Main Content Canvas -->
-    <main class="ml-sidebar-width mt-16 p-section-padding min-h-[calc(100vh-64px)] max-w-7xl mx-auto">
+    <main class="ml-sidebar-width mt-16 p-section-padding min-h-[calc(100vh-64px)] max-w-7xl mx-auto" style="background-color: #F8FAFF;">
+        @if (session('success'))
+            <div class="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center justify-between shadow-xs">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+                    <span class="font-medium">{{ session('success') }}</span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-800">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                </button>
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs flex items-start gap-2 shadow-xs">
+                <span class="material-symbols-outlined text-[20px] text-red-600 shrink-0">error</span>
+                <div class="flex flex-col gap-0.5">
+                    @foreach ($errors->all() as $error)
+                        <p class="font-medium">{{ $error }}</p>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
         <!-- Header Section -->
         <div class="flex justify-between items-start mb-container-gap">
             <div class="flex flex-col gap-2">
@@ -113,17 +140,17 @@
                 </div>
                 <h2 class="text-display-lg font-display-lg" style="color:#1e3a8a">{{ $bug->title }}</h2>
                 <div class="flex items-center gap-4 mt-2">
-                    @if ($bug->priority == 'p1')
+                    @if (strtolower($bug->priority) == 'p1')
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-md text-label-md">
-                            <span class="w-2 h-2 rounded-full bg-error"></span> High Priority
+                            <span class="w-2 h-2 rounded-full bg-error"></span> High Priority (P1)
                         </span>
-                    @elseif ($bug->priority == 'p2')
+                    @elseif (strtolower($bug->priority) == 'p2')
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tertiary-container text-on-tertiary-container font-label-md text-label-md border border-tertiary/20">
-                            <span class="w-2 h-2 rounded-full bg-tertiary"></span> Medium Priority
+                            <span class="w-2 h-2 rounded-full bg-tertiary"></span> Medium Priority (P2)
                         </span>
                     @else
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-md text-label-md border border-outline-variant">
-                            <span class="w-2 h-2 rounded-full bg-secondary"></span> Low Priority
+                            <span class="w-2 h-2 rounded-full bg-secondary"></span> Low Priority (P3)
                         </span>
                     @endif
 
@@ -169,9 +196,10 @@
 
                 <!-- Developer Actions -->
                 @if ($role === 'developer')
-                    <form action="{{ route('bugs.status.update', $bug) }}" method="POST" class="flex flex-wrap items-center gap-3 bg-surface-container-lowest p-2 border border-outline-variant/80 rounded-xl shadow-xs">
+                    <form action="{{ route('bugs.status.update', $bug) }}" method="POST" class="flex flex-wrap items-center gap-3 bg-white p-2 border border-slate-200/80 rounded-xl shadow-xs">
                         @csrf
                         @method('PATCH')
+                        <input type="hidden" name="from_show" value="1"/>
 
                         <!-- Status Selector -->
                         <div class="flex items-center gap-2 pl-2">
@@ -194,9 +222,10 @@
 
                 <!-- Support Dev / QA & Super Admin Actions -->
                 @if ($role === 'super_admin' || $role === 'support_dev')
-                    <form action="{{ route('bugs.status.update', $bug) }}" method="POST" class="flex flex-wrap items-center gap-3 bg-surface-container-lowest p-2 border border-outline-variant/80 rounded-xl shadow-xs">
+                    <form action="{{ route('bugs.status.update', $bug) }}" method="POST" class="flex flex-wrap items-center gap-3 bg-white p-2 border border-slate-200/80 rounded-xl shadow-xs">
                         @csrf
                         @method('PATCH')
+                        <input type="hidden" name="from_show" value="1"/>
                         
                         <!-- Status Selector -->
                         <div class="flex items-center gap-2 pl-2">
@@ -207,6 +236,18 @@
                                 <option value="done_by_development" {{ $bug->status === 'done_by_development' || $bug->status === 'fixed' ? 'selected' : '' }}>Done by Development</option>
                                 <option value="done_by_support_qa" {{ $bug->status === 'done_by_support_qa' || $bug->status === 'retest' ? 'selected' : '' }}>Done by Support/QA</option>
                                 <option value="closed" {{ $bug->status === 'closed' ? 'selected' : '' }}>Closed</option>
+                            </select>
+                        </div>
+                        
+                        <div class="h-6 w-px bg-outline-variant/60 hidden sm:block"></div>
+
+                        <!-- Priority Selector -->
+                        <div class="flex items-center gap-2">
+                            <label for="priority-select" class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Priority:</label>
+                            <select id="priority-select" name="priority" class="bg-surface-container-low border border-outline-variant/60 rounded-lg py-1.5 pl-3 pr-8 font-medium text-xs text-on-surface focus:ring-2 focus:ring-primary focus:outline-none cursor-pointer">
+                                <option value="p1" {{ strtolower($bug->priority) === 'p1' ? 'selected' : '' }}>P1 (Critical)</option>
+                                <option value="p2" {{ strtolower($bug->priority) === 'p2' ? 'selected' : '' }}>P2 (High)</option>
+                                <option value="p3" {{ strtolower($bug->priority) === 'p3' ? 'selected' : '' }}>P3 (Low)</option>
                             </select>
                         </div>
                         
@@ -237,7 +278,7 @@
             <!-- Left Column: Details & Attachments -->
             <div class="lg:col-span-2 flex flex-col gap-container-gap">
                 <!-- Description Card -->
-                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-6">
                     <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">Description</h3>
                     <div class="text-body-lg font-body-lg text-on-surface-variant leading-relaxed whitespace-pre-line">
                         {{ $bug->description }}
@@ -245,7 +286,7 @@
                 </div>
 
                 <!-- Attachments Card -->
-                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-headline-sm font-headline-sm text-on-surface">Attachments</h3>
                     </div>
@@ -306,7 +347,7 @@
             <!-- Right Column: Meta & Timeline -->
             <div class="flex flex-col gap-container-gap">
                 <!-- Meta Info Card -->
-                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-6">
                     <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">Informasi Bug</h3>
                     <div class="space-y-4">
                         @if ($bug->project)
@@ -333,7 +374,21 @@
                         </div>
                         <div class="flex justify-between items-center pb-3 border-b border-outline-variant/50">
                             <span class="text-label-md font-label-md text-secondary">Priority</span>
-                            <span class="text-body-md font-body-md text-on-surface uppercase font-semibold">{{ $bug->priority }}</span>
+                            <div>
+                                @if (strtolower($bug->priority) === 'p1')
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-error text-white font-bold text-xs shadow-xs">
+                                        <span class="material-symbols-outlined text-[13px]">arrow_upward</span> P1 Critical
+                                    </span>
+                                @elseif (strtolower($bug->priority) === 'p2')
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500 text-white font-bold text-xs shadow-xs">
+                                        <span class="material-symbols-outlined text-[13px]">arrow_upward</span> P2 High
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-variant text-on-surface-variant font-medium text-xs border border-outline-variant">
+                                        <span class="w-2 h-2 rounded-full bg-secondary"></span> P3 Low
+                                    </span>
+                                @endif
+                            </div>
                         </div>
                         <div class="flex justify-between items-center pb-3 border-b border-outline-variant/50">
                             <span class="text-label-md font-label-md text-secondary">Status</span>
@@ -347,7 +402,7 @@
                 </div>
 
                 <!-- History Timeline -->
-                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant p-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-6">
                     <h3 class="text-headline-sm font-headline-sm text-on-surface mb-6">Activity Timeline</h3>
                     <div class="relative space-y-6 before:absolute before:top-4 before:bottom-4 before:left-[15px] before:w-[2px] before:bg-outline-variant/70">
                         @if ($bug->status !== 'open')

@@ -27,7 +27,11 @@ Route::middleware('auth')->group(function () {
         if ($user->role === 'support_dev') {
             $query->where('reporter_id', $user->id);
         }
-        $recentBugs = $query->orderBy('created_at', 'desc')->take(5)->get();
+        // Bug automatically rises to top if priority is high/important (P1 Critical -> P2 High -> P3 Medium)
+        $recentBugs = $query->orderByRaw("CASE priority WHEN 'p1' THEN 1 WHEN 'p2' THEN 2 WHEN 'p3' THEN 3 ELSE 4 END ASC")
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
 
         return view('dashboard', compact('recentBugs'));
     })->name('dashboard');

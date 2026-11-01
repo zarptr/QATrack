@@ -26,7 +26,7 @@
                 "outline-variant": "#e2e8f0",
                 "outline": "#94a3b8",
                 "secondary": "#64748b",
-                "background": "#ffffff",
+                "background": "#F8FAFF",
                 "error": "#dc2626",
                 "error-container": "#fee2e2",
                 "tertiary-container": "#fef3c7",
@@ -48,19 +48,21 @@
       }
     </script>
     <style>
-        body { background-color: #f8fafc; margin: 0; padding: 0; overflow-x: hidden; }
+        body, main { background-color: #F8FAFF !important; margin: 0; padding: 0; }
+        body { overflow-x: hidden; }
+        .bg-surface, .bg-surface-container-lowest, .card-white { background-color: #ffffff !important; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .folder-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
-<body class="flex bg-background text-on-background font-body-md antialiased h-screen overflow-hidden">
+<body class="flex text-on-background font-body-md antialiased h-screen overflow-hidden" style="background-color: #F8FAFF;">
     @include('layouts.sidebar')
     
     <div class="flex-1 ml-sidebar-width flex flex-col h-screen relative">
         @include('layouts.header', ['breadcrumb' => 'Projects / ' . $project->name])
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto mt-16 p-section-padding bg-background">
+        <main class="flex-1 overflow-y-auto mt-16 p-section-padding" style="background-color: #F8FAFF;">
             <div class="max-w-7xl mx-auto space-y-6">
                 
                 <!-- Header & Breadcrumbs -->
@@ -83,9 +85,16 @@
                             </div>
                             <div>
                                 <h2 class="text-2xl font-bold" style="color:#1e3a8a">{{ $project->name }}</h2>
-                                @if($project->description)
-                                    <p class="text-xs text-secondary mt-0.5">{{ $project->description }}</p>
-                                @endif
+                                <div class="flex items-center gap-2 text-xs text-secondary mt-0.5 flex-wrap">
+                                    @if($project->description)
+                                        <span>{{ $project->description }}</span>
+                                        <span class="text-slate-300">&bull;</span>
+                                    @endif
+                                    <span class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[14px] text-slate-400">person</span>
+                                        <span>Dibuat oleh <strong class="text-on-surface font-semibold">{{ $project->creator?->name ?? 'Sistem' }}</strong></span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -108,7 +117,7 @@
                 @endif
 
                 <!-- Filter Controls (Drive Filter Bar) -->
-                <form method="GET" action="{{ route('projects.show', $project) }}" class="flex flex-wrap items-center gap-3 bg-surface p-3 rounded-2xl shadow-sm border border-slate-200">
+                <form method="GET" action="{{ route('projects.show', $project) }}" class="flex flex-wrap items-center gap-3 bg-white p-3 rounded-2xl shadow-sm border border-slate-200">
                     <div class="flex items-center gap-1.5 px-2 text-secondary">
                         <span class="material-symbols-outlined text-[18px]">tune</span>
                         <span class="text-xs font-bold uppercase tracking-wider">Filter</span>
@@ -148,7 +157,7 @@
                 </form>
 
                 <!-- Drive File Explorer Table -->
-                <div class="bg-surface rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     @if ($bugs->count() > 0)
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse">

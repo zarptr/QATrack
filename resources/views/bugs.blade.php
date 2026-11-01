@@ -38,7 +38,7 @@
                         "inverse-primary": "#e4e4e7",
                         "on-surface": "#18181b",
                         "surface-tint": "#1e40af",
-                        "background": "#ffffff",
+                        "background": "#F8FAFF",
                         "surface-dim": "#f4f4f5",
                         "secondary-fixed-dim": "#e4e4e7",
                         "on-secondary-container": "#1e3a8a",
@@ -101,17 +101,19 @@
     </script>
     <style>
         /* Base styles to ensure clean layout */
-        body { background-color: #f8f9ff; margin: 0; padding: 0; overflow-x: hidden; }
+        body, main { background-color: #F8FAFF !important; margin: 0; padding: 0; }
+        body { overflow-x: hidden; }
+        .bg-surface-container-lowest, .bg-surface, .card-white { background-color: #ffffff !important; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
-<body class="flex bg-background text-on-background font-body-md antialiased h-screen overflow-hidden">
+<body class="flex text-on-background font-body-md antialiased h-screen overflow-hidden" style="background-color: #F8FAFF;">
     @include('layouts.sidebar')
     <div class="flex-1 ml-sidebar-width flex flex-col h-screen relative">
         @include('layouts.header')
 
         <!-- Main Scrollable Area -->
-        <main class="flex-1 overflow-y-auto mt-16 p-section-padding bg-background">
+        <main class="flex-1 overflow-y-auto mt-16 p-section-padding" style="background-color: #F8FAFF;">
             <div class="max-w-7xl mx-auto space-y-container-gap">
                 <!-- Page Header -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -145,8 +147,92 @@
                     </div>
                 @endif
 
+                <!-- Distribution by Priority Section (Dev Priority Tracking & Auto-Escalation) -->
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-200/80">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="font-headline-sm text-headline-sm text-on-background">Distribution by Priority</h3>
+                                <span class="text-xs px-2.5 py-0.5 rounded-full bg-blue-100 text-primary font-bold">
+                                    {{ $bugs->count() }} Tiket
+                                </span>
+                            </div>
+                            <p class="text-xs text-secondary mt-0.5">Distribusi prioritas tiket bug. Sistem secara otomatis menaikkan bug dengan prioritas tinggi/kritis ke urutan teratas antrean pengerjaan.</p>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span class="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full bg-red-50 text-error border border-red-200 shadow-xs">
+                                <span class="material-symbols-outlined text-[15px] animate-bounce">arrow_upward</span>
+                                <span>Prioritas Tinggi Otomatis Naik</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Priority Bars Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- P1 Critical Card -->
+                        <a href="{{ request()->fullUrlWithQuery(['priority' => 'p1']) }}" class="p-4 rounded-xl border {{ request('priority') == 'p1' ? 'border-error bg-red-50/70 ring-2 ring-error/20' : 'border-slate-200/80 hover:border-error/60 bg-white hover:bg-red-50/30' }} transition-all flex flex-col justify-between group cursor-pointer shadow-xs">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-error animate-pulse"></span>
+                                    <span class="font-bold text-sm text-on-surface group-hover:text-error transition-colors">P1 Critical</span>
+                                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-error text-white uppercase tracking-wider flex items-center gap-0.5">
+                                        <span class="material-symbols-outlined text-[11px]">arrow_upward</span> Top Rank
+                                    </span>
+                                </div>
+                                <span class="font-mono-code font-bold text-xl text-error">{{ $p1Count ?? 0 }}</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-1.5">
+                                <div class="bg-error h-full rounded-full transition-all duration-500" style="width: {{ $p1Percent ?? 0 }}%"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-[11px] text-secondary mt-2.5">
+                                <span>{{ $p1Percent ?? 0 }}% dari total bug</span>
+                                <span class="text-error font-semibold group-hover:underline flex items-center gap-0.5">Filter P1 <span class="material-symbols-outlined text-[13px]">chevron_right</span></span>
+                            </div>
+                        </a>
+
+                        <!-- P2 High Card -->
+                        <a href="{{ request()->fullUrlWithQuery(['priority' => 'p2']) }}" class="p-4 rounded-xl border {{ request('priority') == 'p2' ? 'border-amber-500 bg-amber-50/70 ring-2 ring-amber-500/20' : 'border-slate-200/80 hover:border-amber-400 bg-white hover:bg-amber-50/30' }} transition-all flex flex-col justify-between group cursor-pointer shadow-xs">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                    <span class="font-bold text-sm text-on-surface group-hover:text-amber-700 transition-colors">P2 High</span>
+                                    <span class="text-[10px] font-bold px-1.5 py-0.2 rounded bg-amber-500 text-white uppercase tracking-wider flex items-center gap-0.5">
+                                        <span class="material-symbols-outlined text-[11px]">arrow_upward</span> Priority
+                                    </span>
+                                </div>
+                                <span class="font-mono-code font-bold text-xl text-amber-600">{{ $p2Count ?? 0 }}</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-1.5">
+                                <div class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: {{ $p2Percent ?? 0 }}%"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-[11px] text-secondary mt-2.5">
+                                <span>{{ $p2Percent ?? 0 }}% dari total bug</span>
+                                <span class="text-amber-700 font-semibold group-hover:underline flex items-center gap-0.5">Filter P2 <span class="material-symbols-outlined text-[13px]">chevron_right</span></span>
+                            </div>
+                        </a>
+
+                        <!-- P3 Medium Card -->
+                        <a href="{{ request()->fullUrlWithQuery(['priority' => 'p3']) }}" class="p-4 rounded-xl border {{ request('priority') == 'p3' ? 'border-blue-500 bg-blue-50/70 ring-2 ring-blue-500/20' : 'border-slate-200/80 hover:border-blue-400 bg-white hover:bg-blue-50/30' }} transition-all flex flex-col justify-between group cursor-pointer shadow-xs">
+                            <div class="flex justify-between items-start mb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                                    <span class="font-bold text-sm text-on-surface group-hover:text-primary transition-colors">P3 Medium</span>
+                                </div>
+                                <span class="font-mono-code font-bold text-xl text-secondary">{{ $p3Count ?? 0 }}</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-1.5">
+                                <div class="bg-slate-400 h-full rounded-full transition-all duration-500" style="width: {{ $p3Percent ?? 0 }}%"></div>
+                            </div>
+                            <div class="flex justify-between items-center text-[11px] text-secondary mt-2.5">
+                                <span>{{ $p3Percent ?? 0 }}% dari total bug</span>
+                                <span class="text-primary font-semibold group-hover:underline flex items-center gap-0.5">Filter P3 <span class="material-symbols-outlined text-[13px]">chevron_right</span></span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Filters & Controls Bar -->
-                <form method="GET" action="{{ route('bugs') }}" class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-outline-variant flex flex-wrap items-center gap-4">
+                <form method="GET" action="{{ route('bugs') }}" class="bg-white p-4 rounded-xl shadow-sm border border-slate-200/80 flex flex-wrap items-center gap-4">
                     <div class="flex items-center gap-2 border-r border-outline-variant pr-4">
                         <span class="material-symbols-outlined text-outline">filter_list</span>
                         <span class="text-label-md font-label-md text-on-surface-variant uppercase tracking-wider">Filters</span>
@@ -161,7 +247,7 @@
                     </select>
                     <select name="priority" onchange="this.form.submit()" class="bg-surface border border-outline-variant rounded-md py-1.5 pl-3.5 pr-9 text-body-md font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none min-w-[140px]">
                         <option value="">All Priorities</option>
-                        <option value="p1" {{ request('priority') == 'p1' ? 'selected' : '' }}>P1 - Critical</option>
+                        <option value="p1" {{ request('priority') == 'p1' ? 'selected' : '' }}>P1 - Critical (Top)</option>
                         <option value="p2" {{ request('priority') == 'p2' ? 'selected' : '' }}>P2 - High</option>
                         <option value="p3" {{ request('priority') == 'p3' ? 'selected' : '' }}>P3 - Medium</option>
                     </select>
@@ -177,7 +263,7 @@
                         <select name="project_id" onchange="this.form.submit()" class="bg-surface border border-outline-variant rounded-md py-1.5 pl-3.5 pr-9 text-body-md font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:outline-none min-w-[140px]">
                             <option value="">All Projects</option>
                             @foreach ($projects as $proj)
-                                <option value="{{ $proj->id }}" {{ request('project_id') == $proj->id ? 'selected' : '' }}>📁 {{ $proj->name }}</option>
+                                <option value="{{ $proj->id }}" {{ request('project_id') == $proj->id ? 'selected' : '' }}>📁 {{ $proj->name }}{{ $proj->creator ? ' (oleh ' . $proj->creator->name . ')' : '' }}</option>
                             @endforeach
                         </select>
                     @endif
@@ -186,11 +272,18 @@
                     @endif
                 </form>
                 <!-- Data Table Container -->
-                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden">
+                    <div class="px-4 py-2.5 bg-slate-50 border-b border-outline-variant flex items-center justify-between text-xs text-secondary">
+                        <span class="flex items-center gap-1.5 font-medium">
+                            <span class="material-symbols-outlined text-[15px] text-error">sort</span>
+                            Urutan Prioritas: <strong>P1 Critical</strong> &rarr; <strong>P2 High</strong> &rarr; <strong>P3 Medium</strong> (Otomatis naik berdasarkan urgensi)
+                        </span>
+                        <span class="text-slate-400">Total: {{ $bugs->count() }} tiket</span>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-surface-container-low border-b border-outline-variant">
+                                <tr class="bg-slate-50/80 border-b border-slate-200/80">
                                     <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-wider font-medium">Bug ID</th>
                                     <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-wider font-medium">Title</th>
                                     <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-wider font-medium">Priority</th>
@@ -202,10 +295,15 @@
                             </thead>
                             <tbody class="divide-y divide-outline-variant">
                                 @forelse ($bugs as $bug)
-                                    <tr class="hover:bg-surface-container-high transition-colors group">
+                                    <tr class="bg-white hover:bg-slate-50 transition-colors group {{ $bug->priority == 'p1' ? 'bg-red-50/25 border-l-4 border-l-error' : ($bug->priority == 'p2' ? 'border-l-4 border-l-amber-400' : '') }}">
                                         <td class="py-4 px-4 font-mono-code text-mono-code text-on-surface-variant">BUG-{{ 4000 + $bug->id }}</td>
                                         <td class="py-4 px-4">
-                                            <div class="font-body-md text-body-md text-on-surface font-medium">{{ $bug->title }}</div>
+                                            <div class="font-body-md text-body-md text-on-surface font-medium flex items-center gap-2">
+                                                <span>{{ $bug->title }}</span>
+                                                @if($bug->priority == 'p1')
+                                                    <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-red-100 text-error">PRIORITY</span>
+                                                @endif
+                                            </div>
                                             @if ($bug->project)
                                                 <div class="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[11px] font-medium border border-blue-100">
                                                     <span class="material-symbols-outlined text-[13px]">folder</span>
@@ -215,16 +313,16 @@
                                         </td>
                                         <td class="py-4 px-4">
                                             @if ($bug->priority == 'p1')
-                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-error-container text-on-error-container font-label-md text-label-md border border-error/20">
-                                                    <span class="w-2 h-2 rounded-full bg-error"></span> P1
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-error text-white font-bold text-xs shadow-sm">
+                                                    <span class="material-symbols-outlined text-[13px]">arrow_upward</span> P1 Critical
                                                 </span>
                                             @elseif ($bug->priority == 'p2')
-                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-tertiary-container text-on-tertiary-container font-label-md text-label-md border border-tertiary/20">
-                                                    <span class="w-2 h-2 rounded-full bg-tertiary"></span> P2
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-amber-500 text-white font-semibold text-xs shadow-sm">
+                                                    <span class="material-symbols-outlined text-[13px]">arrow_upward</span> P2 High
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-variant text-on-surface-variant font-label-md text-label-md border border-outline-variant">
-                                                    <span class="w-2 h-2 rounded-full bg-secondary"></span> P3
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-surface-variant text-on-surface-variant font-medium text-xs border border-outline-variant">
+                                                    <span class="w-2 h-2 rounded-full bg-secondary"></span> P3 Medium
                                                 </span>
                                             @endif
                                         </td>
@@ -248,7 +346,9 @@
                                                 </div>
                                                 {{ $bug->developer }}
                                             @else
-                                                <img alt="Developer Avatar" class="w-6 h-6 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAkGgOFvM_POS7k9PufLA2VsGOSEOviuXRdDzdh3gXxSN2TAuit4NTZEX21Oh_QniQR7D1oVeyfZ2008UhtvAou92PPHk116bMVQgZfH5Q69eJVysjHqj2FcnzlrO86iglufmXVKdFZHZhuYMPjeiVIu65HfoZNBgSe7VLvfdgjDhDHMK0uixq-m7dFxiVPhUz795iowGJlvLpyiAADq5ycV8if-jIagn6tBwN8Lk3JbYvEtsZyZCF"/>
+                                                <div class="w-6 h-6 rounded-full bg-surface-container text-secondary flex items-center justify-center text-[10px] font-bold">
+                                                    --
+                                                </div>
                                                 Unassigned
                                             @endif
                                         </td>

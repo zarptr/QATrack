@@ -38,7 +38,7 @@
                         "inverse-primary": "#e4e4e7",
                         "on-surface": "#18181b",
                         "surface-tint": "#1e40af",
-                        "background": "#ffffff",
+                        "background": "#F8FAFF",
                         "surface-dim": "#f4f4f5",
                         "secondary-fixed-dim": "#e4e4e7",
                         "on-secondary-container": "#1e3a8a",
@@ -100,17 +100,19 @@
       }
     </script>
     <style>
-        body { background-color: #f8f9ff; margin: 0; padding: 0; overflow-x: hidden; }
+        body, main { background-color: #F8FAFF !important; margin: 0; padding: 0; }
+        body { overflow-x: hidden; }
+        .bg-surface, .bg-surface-container-lowest, .card-white { background-color: #ffffff !important; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
-<body class="flex bg-background text-on-background font-body-md antialiased h-screen overflow-hidden">
+<body class="flex text-on-background font-body-md antialiased h-screen overflow-hidden" style="background-color: #F8FAFF;">
     @include('layouts.sidebar')
     <div class="flex-1 ml-sidebar-width flex flex-col h-screen relative">
         @include('layouts.header')
 
         <!-- Main Scrollable Area -->
-        <main class="flex-1 overflow-y-auto mt-16 p-section-padding bg-background">
+        <main class="flex-1 overflow-y-auto mt-16 p-section-padding" style="background-color: #F8FAFF;">
             <div class="max-w-7xl mx-auto space-y-container-gap">
                 <!-- Page Header -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -143,11 +145,11 @@
                 @endif
 
                 <!-- Data Table Container -->
-                <div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 overflow-hidden">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-surface-container-low border-b border-outline-variant">
+                                <tr class="bg-slate-50/80 border-b border-slate-200/80">
                                     <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-wider font-medium">User</th>
                                     <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-wider font-medium">Email</th>
                                     <th class="py-3 px-4 font-label-md text-label-md text-secondary uppercase tracking-wider font-medium">Role</th>
@@ -157,7 +159,7 @@
                             </thead>
                             <tbody class="divide-y divide-outline-variant">
                                 @forelse ($users as $user)
-                                    <tr class="hover:bg-surface-container-high transition-colors group">
+                                    <tr class="bg-white hover:bg-slate-50 transition-colors group">
                                         <td class="py-4 px-4">
                                             <div class="flex items-center gap-3">
                                                 <div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm">

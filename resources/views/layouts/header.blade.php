@@ -147,8 +147,8 @@
 
         <!-- User Profile Dropdown Container -->
         <div class="relative" id="user-profile-wrapper">
-            <button id="user-profile-btn" type="button" class="flex items-center gap-2.5 p-1 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-100" title="{{ $currentUser->name }}" aria-expanded="false">
-                <div class="text-right hidden sm:block">
+            <button id="user-profile-btn" type="button" class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-100" title="{{ $currentUser->name }}" aria-expanded="false">
+                <div class="text-right">
                     <span class="text-on-surface font-semibold text-xs block leading-tight">{{ $currentUser->name }}</span>
                     <span class="text-[10px] text-secondary font-medium uppercase tracking-wider">
                         @if($currentUser->role === 'super_admin') Super Admin
@@ -156,8 +156,7 @@
                         @else Developer @endif
                     </span>
                 </div>
-                <img alt="{{ $currentUser->name }}" class="w-8 h-8 rounded-full object-cover border border-outline-variant shadow-xs" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_ZdyN8nOgyk3nZ0D-4sHzGFv-UJnC8uMmw-ycEHHEoM4oBXA1Ej4N4hx6hJKXrE6-5idg0BkpnTHrQ9IhQVyOxP4fWuITLi1QZCZX9kC5A2YB8eiAP4y76VTqGOO9Oi-92CqaCQEidqahExgSWo0HIllpKfLII64dHGVCPM7Sd_VuibjOm5QGW8gJSAaTtMPngycBP_EwzmxyJhMIrTvyWx4MiWfsY_9mlzQ8vNU3xqIU7DXOG7o8"/>
-                <span class="material-symbols-outlined text-[16px] text-secondary transition-transform duration-200" id="profile-chevron">expand_more</span>
+                <span class="material-symbols-outlined text-[18px] text-secondary transition-transform duration-200" id="profile-chevron">expand_more</span>
             </button>
 
             <!-- User Profile Dropdown Menu -->

@@ -26,7 +26,7 @@
                 "outline-variant": "#e2e8f0",
                 "outline": "#94a3b8",
                 "secondary": "#64748b",
-                "background": "#ffffff",
+                "background": "#F8FAFF",
                 "error": "#dc2626",
                 "error-container": "#fee2e2",
                 "tertiary-container": "#fef3c7",
@@ -48,19 +48,21 @@
       }
     </script>
     <style>
-        body { background-color: #f8fafc; margin: 0; padding: 0; overflow-x: hidden; }
+        body, main { background-color: #F8FAFF !important; margin: 0; padding: 0; }
+        body { overflow-x: hidden; }
+        .bg-surface, .bg-surface-container-lowest, .card-white { background-color: #ffffff !important; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .folder-filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
-<body class="flex bg-background text-on-background font-body-md antialiased h-screen overflow-hidden">
+<body class="flex text-on-background font-body-md antialiased h-screen overflow-hidden" style="background-color: #F8FAFF;">
     @include('layouts.sidebar')
     
     <div class="flex-1 ml-sidebar-width flex flex-col h-screen relative">
         @include('layouts.header', ['breadcrumb' => 'Project Folders'])
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto mt-16 p-section-padding bg-background">
+        <main class="flex-1 overflow-y-auto mt-16 p-section-padding" style="background-color: #F8FAFF;">
             <div class="max-w-7xl mx-auto space-y-6">
                 
                 <!-- Top Action Bar -->
@@ -92,9 +94,9 @@
                             @endif
                         </form>
 
-                        <!-- Google Drive Style "+ New Folder" Button -->
+                        <!-- Google Drive Style "+ New Folder" Button (Super Admin & QA/Support) -->
                         @if(auth()->user()->role !== 'developer')
-                            <button onclick="document.getElementById('new-project-modal').classList.remove('hidden')" class="px-5 py-2.5 bg-surface hover:bg-slate-50 text-on-surface hover:shadow-md border border-outline-variant rounded-full text-sm font-semibold flex items-center gap-2.5 shadow-sm transition-all active:scale-95 cursor-pointer group">
+                            <button onclick="document.getElementById('new-project-modal').classList.remove('hidden')" class="px-5 py-2.5 bg-white hover:bg-slate-50 text-on-surface hover:shadow-md border border-slate-200/90 rounded-full text-sm font-semibold flex items-center gap-2.5 shadow-sm transition-all active:scale-95 cursor-pointer group">
                                 <span class="material-symbols-outlined text-primary text-[22px] group-hover:rotate-90 transition-transform">add_circle</span>
                                 <span class="text-primary font-bold">New Folder</span>
                             </button>
@@ -130,7 +132,7 @@
                     @if($projects->count() > 0)
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             @foreach($projects as $project)
-                                <div class="bg-surface hover:bg-slate-50/80 border border-slate-200/90 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group flex flex-col justify-between h-40 cursor-pointer relative" onclick="if(!event.target.closest('button') && !event.target.closest('a')) { window.location.href='{{ route('projects.show', $project) }}'; }">
+                                <div class="bg-white hover:bg-slate-50/80 border border-slate-200/90 rounded-2xl p-4 shadow-sm hover:shadow-md hover:border-blue-300 transition-all group flex flex-col justify-between h-44 cursor-pointer relative" onclick="if(!event.target.closest('button') && !event.target.closest('a')) { window.location.href='{{ route('projects.show', $project) }}'; }">
                                     
                                     <!-- Card Header: Icon & 3-Dots Action -->
                                     <div class="flex items-start justify-between">
@@ -156,12 +158,20 @@
                                         </div>
                                     </div>
 
-                                    <!-- Folder Name & Desc -->
-                                    <div class="my-2">
+                                    <!-- Folder Name & Desc & Creator Info -->
+                                    <div class="my-1.5">
                                         <a href="{{ route('projects.show', $project) }}" class="text-sm font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-1 block" title="{{ $project->name }}">
                                             {{ $project->name }}
                                         </a>
                                         <p class="text-xs text-secondary line-clamp-1 mt-0.5">{{ $project->description ?: 'No description' }}</p>
+
+                                        <!-- Creator attribution badge -->
+                                        <div class="flex items-center gap-1.5 mt-2 text-[11px] text-secondary">
+                                            <div class="w-4 h-4 rounded-full bg-blue-100 text-primary flex items-center justify-center text-[9px] font-bold shrink-0">
+                                                {{ strtoupper(substr($project->creator?->name ?? 'S', 0, 1)) }}
+                                            </div>
+                                            <span class="truncate">Dibuat oleh <strong class="text-on-surface font-semibold">{{ $project->creator?->name ?? 'Sistem' }}</strong></span>
+                                        </div>
                                     </div>
 
                                     <!-- Bottom Mini Stats Bar -->
@@ -184,12 +194,12 @@
                         </div>
                     @else
                         <!-- Google Drive Style Empty State -->
-                        <div class="bg-surface rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
+                        <div class="bg-white rounded-2xl border border-slate-200 p-12 text-center shadow-sm">
                             <div class="w-16 h-16 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-4 text-primary">
                                 <span class="material-symbols-outlined text-[36px] folder-filled text-blue-500">folder_open</span>
                             </div>
                             <h3 class="text-lg font-bold text-on-surface mb-1">Belum Ada Folder Project</h3>
-                            <p class="text-sm text-secondary max-w-md mx-auto mb-6">Buat folder project terlebih dahulu untuk mengelompokkan dan mengelola laporan tiket bug Anda.</p>
+                            <p class="text-sm text-secondary max-w-md mx-auto mb-6">Folder project dikelompokkan secara otomatis oleh sistem ketika tiket bug dilaporkan.</p>
                             @if(auth()->user()->role !== 'developer')
                                 <button onclick="document.getElementById('new-project-modal').classList.remove('hidden')" class="inline-flex items-center gap-2 py-2.5 px-6 bg-primary text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity shadow-md">
                                     <span class="material-symbols-outlined text-[20px]">create_new_folder</span>
@@ -233,6 +243,10 @@
                             placeholder="e.g. Instagram, Web Banking, POS System" 
                             class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-on-surface focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all"
                         />
+                        <p class="text-[11px] text-secondary mt-1.5 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[13px] text-primary">person</span>
+                            <span>Pembuat folder: <strong class="text-on-surface font-semibold">{{ auth()->user()->name }}</strong></span>
+                        </p>
                     </div>
                     <div>
                         <label for="projectDesc" class="block text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5">Description (Optional)</label>

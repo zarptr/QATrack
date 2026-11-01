@@ -37,7 +37,7 @@
                         "inverse-primary": "#e4e4e7",
                         "on-surface": "#18181b",
                         "surface-tint": "#1e40af",
-                        "background": "#ffffff",
+                        "background": "#F8FAFF",
                         "surface-dim": "#f4f4f5",
                         "secondary-fixed-dim": "#e4e4e7",
                         "on-secondary-container": "#1e3a8a",
@@ -100,20 +100,22 @@
         }
     </script>
     <style>
+        body, main { background-color: #F8FAFF !important; margin: 0; padding: 0; }
+        body { overflow-x: hidden; }
+        .bg-surface, .bg-surface-container-lowest, .card-white { background-color: #ffffff !important; }
         .custom-shadow {
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
-        body { background-color: #f8f9ff; margin: 0; padding: 0; overflow-x: hidden; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
     </style>
 </head>
-<body class="flex bg-background text-on-background font-body-md antialiased h-screen overflow-hidden">
+<body class="flex text-on-background font-body-md antialiased h-screen overflow-hidden" style="background-color: #F8FAFF;">
     @include('layouts.sidebar')
     <div class="flex-1 ml-sidebar-width flex flex-col h-screen relative">
         @include('layouts.header')
 
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto mt-16 p-section-padding bg-background">
+        <main class="flex-1 overflow-y-auto mt-16 p-section-padding" style="background-color: #F8FAFF;">
             <div class="max-w-7xl mx-auto space-y-container-gap">
                 <!-- Page Header -->
                 <div class="mb-8">
@@ -151,7 +153,7 @@
                 <!-- Layout Split columns -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-container-gap">
                     <!-- Profile Details -->
-                    <div class="bg-surface-container-lowest rounded-xl custom-shadow border border-outline-variant/40 p-6 flex flex-col justify-between">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-6 flex flex-col justify-between">
                         <div>
                             <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Profile Information</h3>
                             <p class="text-body-md text-secondary mb-6">Update your account's profile information and email address.</p>
@@ -167,7 +169,7 @@
                                         id="name" 
                                         name="name" 
                                         value="{{ old('name', auth()->user()->name) }}" 
-                                        class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow" 
+                                        class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow" 
                                         required
                                     />
                                 </div>
@@ -179,7 +181,7 @@
                                         id="email" 
                                         name="email" 
                                         value="{{ old('email', auth()->user()->email) }}" 
-                                        class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow" 
+                                        class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow" 
                                         required
                                     />
                                 </div>
@@ -194,7 +196,7 @@
                     </div>
 
                     <!-- Password Security -->
-                    <div class="bg-surface-container-lowest rounded-xl custom-shadow border border-outline-variant/40 p-6 flex flex-col justify-between">
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-6 flex flex-col justify-between">
                         <div>
                             <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Update Password</h3>
                             <p class="text-body-md text-secondary mb-6">Ensure your account is using a long, random password to stay secure.</p>

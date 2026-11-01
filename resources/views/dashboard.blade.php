@@ -43,7 +43,7 @@
                         "inverse-primary": "#e4e4e7",
                         "on-surface": "#18181b",
                         "surface-tint": "#1e40af",
-                        "background": "#ffffff",
+                        "background": "#F8FAFF",
                         "surface-dim": "#f4f4f5",
                         "secondary-fixed-dim": "#e4e4e7",
                         "on-secondary-container": "#1e3a8a",
@@ -105,12 +105,17 @@
         }
     </script>
 </head>
-<body class="bg-background text-on-background font-body-md min-h-screen overflow-x-hidden">
+<body class="text-on-background font-body-md min-h-screen overflow-x-hidden" style="background-color: #F8FAFF;">
+    <style>
+        body, main {
+            background-color: #F8FAFF !important;
+        }
+    </style>
     @include('layouts.header')
     @include('layouts.sidebar')
 
     <!-- Main Content Canvas -->
-    <main class="ml-sidebar-width pt-16 min-h-screen bg-background">
+    <main class="ml-sidebar-width pt-16 min-h-screen" style="background-color: #F8FAFF;">
         <div class="p-section-padding max-w-7xl mx-auto">
             <!-- Page Header -->
             <div class="mb-container-gap">
@@ -141,104 +146,125 @@
             @endphp
             <!-- Bento Grid - Top Section -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-container-gap mb-container-gap">
-                <!-- Summary Card 1: Total -->
-                <div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_4px_rgba(0,0,0,0.04)] border border-outline-variant/30 flex flex-col justify-between">
+                <!-- Summary Card 1: Total Bugs (Biru) -->
+                <div class="bg-white rounded-xl p-6 shadow-xs border border-slate-200/80 border-t-4 border-t-blue-500 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-[20px]">bug_report</span>
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200/70 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-blue-600 text-[20px]">bug_report</span>
                         </div>
                     </div>
                     <div>
                         <p class="font-body-md text-body-md text-secondary mb-1">Total Bugs</p>
-                        <h3 class="font-display-lg text-display-lg text-on-background">{{ $totalBugs }}</h3>
+                        <h3 class="text-[38px] font-extrabold text-on-background tracking-tight leading-none mt-1">{{ $totalBugs }}</h3>
                     </div>
                 </div>
-                <!-- Summary Card 2: Open -->
-                <div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_4px_rgba(0,0,0,0.04)] border border-outline-variant/30 flex flex-col justify-between">
+                <!-- Summary Card 2: Open Issues (Merah) -->
+                <div class="bg-white rounded-xl p-6 shadow-xs border border-slate-200/80 border-t-4 border-t-red-500 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 rounded-full bg-error-container/30 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-error text-[20px]">error</span>
+                        <div class="w-10 h-10 rounded-xl bg-red-50 border border-red-200/70 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-red-600 text-[20px]">error</span>
                         </div>
                     </div>
                     <div>
                         <p class="font-body-md text-body-md text-secondary mb-1">Open Issues</p>
-                        <h3 class="font-display-lg text-display-lg text-on-background">{{ $openCount }}</h3>
+                        <h3 class="text-[38px] font-extrabold text-on-background tracking-tight leading-none mt-1">{{ $openCount }}</h3>
                     </div>
                 </div>
-                <!-- Summary Card 3: In Progress -->
-                <div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_4px_rgba(0,0,0,0.04)] border border-outline-variant/30 flex flex-col justify-between">
+                <!-- Summary Card 3: In Progress (Oranye) -->
+                <div class="bg-white rounded-xl p-6 shadow-xs border border-slate-200/80 border-t-4 border-t-orange-500 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-tertiary-container text-[20px]">sync</span>
+                        <div class="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200/70 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-orange-600 text-[20px]">sync</span>
                         </div>
                     </div>
                     <div>
                         <p class="font-body-md text-body-md text-secondary mb-1">In Progress</p>
-                        <h3 class="font-display-lg text-display-lg text-on-background">{{ $inProgressCount }}</h3>
+                        <h3 class="text-[38px] font-extrabold text-on-background tracking-tight leading-none mt-1">{{ $inProgressCount }}</h3>
                     </div>
                 </div>
-                <!-- Summary Card 4: Fixed -->
-                <div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_4px_rgba(0,0,0,0.04)] border border-outline-variant/30 flex flex-col justify-between">
+                <!-- Summary Card 4: Fixed (Hijau) -->
+                <div class="bg-white rounded-xl p-6 shadow-xs border border-slate-200/80 border-t-4 border-t-emerald-500 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">
                     <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center">
-                            <span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200/70 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-emerald-600 text-[20px]">check_circle</span>
                         </div>
                     </div>
                     <div>
                         <p class="font-body-md text-body-md text-secondary mb-1">Fixed</p>
-                        <h3 class="font-display-lg text-display-lg text-on-background">{{ $resolvedCount }}</h3>
+                        <h3 class="text-[38px] font-extrabold text-on-background tracking-tight leading-none mt-1">{{ $resolvedCount }}</h3>
                     </div>
                 </div>
             </div>
             <!-- Complex Layout Grid - Bottom Section -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-container-gap">
                 <!-- Chart Area -->
-                <div class="lg:col-span-1 bg-surface-container-lowest rounded-xl p-6 shadow-[0_2px_4px_rgba(0,0,0,0.04)] border border-outline-variant/30">
-                    <h3 class="font-headline-sm text-headline-sm text-on-background mb-6">Distribution by Priority</h3>
-                    <!-- Faux Bar Chart -->
-                    <div class="flex flex-col gap-6">
-                        <!-- P1 Bar -->
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="font-label-md text-label-md text-on-background flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-error"></span> P1 Critical
-                                </span>
-                                <span class="font-mono-code text-mono-code text-secondary">{{ $p1Count }}</span>
-                            </div>
-                            <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
-                                <div class="bg-error h-full rounded-full" style="width: {{ $p1Percent }}%"></div>
-                            </div>
+                <div class="lg:col-span-1 bg-white rounded-xl p-6 shadow-xs border border-slate-200/80 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-headline-sm text-headline-sm text-on-background">Distribution by Priority</h3>
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-red-50 text-error border border-red-200 flex items-center gap-0.5">
+                                <span class="material-symbols-outlined text-[12px]">arrow_upward</span> Auto-Up
+                            </span>
                         </div>
-                        <!-- P2 Bar -->
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="font-label-md text-label-md text-on-background flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-tertiary-container"></span> P2 High
-                                </span>
-                                <span class="font-mono-code text-mono-code text-secondary">{{ $p2Count }}</span>
-                            </div>
-                            <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
-                                <div class="bg-tertiary-container h-full rounded-full" style="width: {{ $p2Percent }}%"></div>
-                            </div>
+                        <p class="text-xs text-secondary mb-6">Klik pada tingkat prioritas untuk memfilter bug. Prioritas tinggi diposisikan teratas.</p>
+                        <!-- Faux Bar Chart with Clickable Navigation -->
+                        <div class="flex flex-col gap-5">
+                            <!-- P1 Bar -->
+                            <a href="{{ route('bugs', ['priority' => 'p1']) }}" class="block group cursor-pointer" title="Lihat semua bug P1 Critical">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="font-label-md text-label-md text-on-background flex items-center gap-2 group-hover:text-error transition-colors">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-error animate-pulse"></span>
+                                        <span class="font-bold">P1 Critical</span>
+                                    </span>
+                                    <span class="font-mono-code text-mono-code font-bold text-error">{{ $p1Count }}</span>
+                                </div>
+                                <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+                                    <div class="bg-error h-full rounded-full transition-all duration-500" style="width: {{ $p1Percent }}%"></div>
+                                </div>
+                            </a>
+                            <!-- P2 Bar -->
+                            <a href="{{ route('bugs', ['priority' => 'p2']) }}" class="block group cursor-pointer" title="Lihat semua bug P2 High">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="font-label-md text-label-md text-on-background flex items-center gap-2 group-hover:text-amber-700 transition-colors">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                        <span class="font-bold">P2 High</span>
+                                    </span>
+                                    <span class="font-mono-code text-mono-code font-bold text-amber-600">{{ $p2Count }}</span>
+                                </div>
+                                <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+                                    <div class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: {{ $p2Percent }}%"></div>
+                                </div>
+                            </a>
+                            <!-- P3 Bar -->
+                            <a href="{{ route('bugs', ['priority' => 'p3']) }}" class="block group cursor-pointer" title="Lihat semua bug P3 Medium">
+                                <div class="flex justify-between items-center mb-1.5">
+                                    <span class="font-label-md text-label-md text-on-background flex items-center gap-2 group-hover:text-primary transition-colors">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+                                        <span class="font-medium">P3 Medium</span>
+                                    </span>
+                                    <span class="font-mono-code text-mono-code text-secondary">{{ $p3Count }}</span>
+                                </div>
+                                <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
+                                    <div class="bg-slate-400 h-full rounded-full transition-all duration-500" style="width: {{ $p3Percent }}%"></div>
+                                </div>
+                            </a>
                         </div>
-                        <!-- P3 Bar -->
-                        <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="font-label-md text-label-md text-on-background flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-primary-fixed-dim"></span> P3 Medium
-                                </span>
-                                <span class="font-mono-code text-mono-code text-secondary">{{ $p3Count }}</span>
-                            </div>
-                            <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
-                                <div class="bg-primary-fixed-dim h-full rounded-full" style="width: {{ $p3Percent }}%"></div>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="pt-4 mt-6 border-t border-outline-variant/40 flex items-center gap-1.5 text-xs text-secondary">
+                        <span class="material-symbols-outlined text-[15px] text-error">priority_high</span>
+                        <span>Bug P1 otomatis diprioritaskan di baris pertama.</span>
                     </div>
                 </div>
                 <!-- Recent Activity Table -->
-                <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl shadow-[0_2px_4px_rgba(0,0,0,0.04)] border border-outline-variant/30 overflow-hidden flex flex-col">
-                    <div class="p-6 border-b border-outline-variant/50 flex justify-between items-center">
-                        <h3 class="font-headline-sm text-headline-sm text-on-background">Recent Activity</h3>
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-xs border border-slate-200/80 overflow-hidden flex flex-col">
+                    <div class="p-5 border-b border-outline-variant/50 flex justify-between items-center bg-slate-50/50">
+                        <div>
+                            <h3 class="font-headline-sm text-headline-sm text-on-background">Recent Activity & Priority Queue</h3>
+                            <p class="text-xs text-secondary mt-0.5">Antrean tiket bug dengan prioritas tinggi otomatis di urutan atas.</p>
+                        </div>
+                        <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-red-50 text-error border border-red-200 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[13px]">sort</span> Prioritas P1 &rarr; P3
+                        </span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
@@ -254,7 +280,7 @@
                             </thead>
                             <tbody class="font-body-md text-body-md">
                                 @forelse ($recentBugs as $bug)
-                                    <tr class="border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors">
+                                    <tr class="border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors {{ $bug->priority == 'p1' ? 'bg-red-50/20 border-l-4 border-l-error' : ($bug->priority == 'p2' ? 'border-l-4 border-l-amber-400' : '') }}">
                                         <td class="p-4 font-mono-code text-mono-code text-secondary">#BUG-{{ 4000 + $bug->id }}</td>
                                         <td class="p-4 text-on-background font-medium truncate max-w-[200px]">
                                             <a href="{{ route('bugs.show', $bug) }}" class="hover:text-primary hover:underline font-semibold block truncate">{{ $bug->title }}</a>
@@ -267,11 +293,15 @@
                                         </td>
                                         <td class="p-4">
                                             @if ($bug->priority == 'p1')
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-[11px] font-bold bg-error-container text-error tracking-wide">P1</span>
+                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-error text-white tracking-wide shadow-xs">
+                                                    <span class="material-symbols-outlined text-[12px]">arrow_upward</span> P1 Critical
+                                                </span>
                                             @elseif ($bug->priority == 'p2')
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-[11px] font-bold bg-tertiary-container/20 text-tertiary-container">P2</span>
+                                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500 text-white tracking-wide shadow-xs">
+                                                    <span class="material-symbols-outlined text-[12px]">arrow_upward</span> P2 High
+                                                </span>
                                             @else
-                                                <span class="inline-flex items-center px-2 py-1 rounded-full text-[11px] font-bold bg-surface-container-highest text-on-background tracking-wide">P3</span>
+                                                <span class="inline-flex items-center px-2 py-1 rounded-md text-[11px] font-medium bg-surface-container-highest text-on-background tracking-wide">P3</span>
                                             @endif
                                         </td>
                                         <td class="p-4">

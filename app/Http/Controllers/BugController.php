@@ -43,11 +43,31 @@ class BugController extends Controller
             $query->where('project', $request->project);
         }
 
-        $bugs = $query->orderBy('created_at', 'desc')->get();
-        $developers = User::where('role', 'developer')->orderBy('name')->get();
-        $projects = Project::orderBy('name')->get();
+        // Bug automatically rises to top if priority is high/important (P1 Critical -> P2 High -> P3 Medium), then newest created
+        $bugs = $query->orderByRaw("CASE priority WHEN 'p1' THEN 1 WHEN 'p2' THEN 2 WHEN 'p3' THEN 3 ELSE 4 END ASC")
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return view('bugs', compact('bugs', 'developers', 'projects'));
+        $developers = User::where('role', 'developer')->orderBy('name')->get();
+        $projects = Project::with('creator')->orderBy('name')->get();
+
+        // Priority distribution metrics for the bugs view (Distribution by Priority)
+        $priorityStatsQuery = Bug::query();
+        if ($user->role === 'support_dev') {
+            $priorityStatsQuery->where('reporter_id', $user->id);
+        } elseif ($user->role === 'developer') {
+            $priorityStatsQuery->where('developer', $user->name);
+        }
+
+        $p1Count = (clone $priorityStatsQuery)->where('priority', 'p1')->count();
+        $p2Count = (clone $priorityStatsQuery)->where('priority', 'p2')->count();
+        $p3Count = (clone $priorityStatsQuery)->where('priority', 'p3')->count();
+        $totalPriorityCount = max($p1Count + $p2Count + $p3Count, 1);
+        $p1Percent = min(100, round(($p1Count / $totalPriorityCount) * 100));
+        $p2Percent = min(100, round(($p2Count / $totalPriorityCount) * 100));
+        $p3Percent = min(100, round(($p3Count / $totalPriorityCount) * 100));
+
+        return view('bugs', compact('bugs', 'developers', 'projects', 'p1Count', 'p2Count', 'p3Count', 'p1Percent', 'p2Percent', 'p3Percent'));
     }
 
     /**
@@ -60,13 +80,13 @@ class BugController extends Controller
         }
 
         $developers = User::where('role', 'developer')->orderBy('name')->get();
-        $projects = Project::orderBy('name')->get();
+        $projects = Project::with('creator')->orderBy('name')->get();
         $selectedProject = null;
 
         if ($request->filled('project_id')) {
-            $selectedProject = Project::find($request->project_id);
+            $selectedProject = Project::with('creator')->find($request->project_id);
         } elseif ($request->filled('project')) {
-            $selectedProject = Project::where('name', $request->project)->first();
+            $selectedProject = Project::with('creator')->where('name', $request->project)->first();
         }
 
         return view('bugs-create', compact('developers', 'projects', 'selectedProject'));
@@ -92,7 +112,7 @@ class BugController extends Controller
             'attachment' => ['nullable', 'file', 'max:5120'],
         ]);
 
-        // Auto-resolve project name and project_id
+        // Auto-group into project folder directly by the system
         if (! empty($validated['project_id'])) {
             $projectObj = Project::find($validated['project_id']);
             if ($projectObj) {
@@ -100,9 +120,23 @@ class BugController extends Controller
             }
         } elseif (! empty($validated['project'])) {
             $projectObj = Project::firstOrCreate(
-                ['name' => trim($validated['project'])],
-                ['created_by' => $request->user()->id]
+                [
+                    'name' => trim($validated['project']),
+                    'created_by' => $request->user()->id,
+                ],
+                [
+                    'description' => 'Folder project untuk '.trim($validated['project']),
+                ]
             );
+            $validated['project_id'] = $projectObj->id;
+            $validated['project'] = $projectObj->name;
+        } else {
+            // Default project folder managed directly by the system
+            $projectObj = Project::first() ?? Project::create([
+                'name' => 'General System',
+                'description' => 'Folder project sistem untuk tiket umum',
+                'created_by' => $request->user()->id,
+            ]);
             $validated['project_id'] = $projectObj->id;
             $validated['project'] = $projectObj->name;
         }
@@ -200,6 +234,7 @@ class BugController extends Controller
         $validated = $request->validate([
             'status' => ['required', 'string', 'in:new,in_progress,done_by_development,done_by_support_qa,open,fixed,retest,closed'],
             'developer' => ['nullable', 'string'],
+            'priority' => ['nullable', 'string', 'in:p1,p2,p3'],
         ]);
 
         if ($user->role === 'developer') {
@@ -207,12 +242,51 @@ class BugController extends Controller
                 return redirect()->back()->withErrors(['status' => 'Developer is not allowed to set this status.']);
             }
             unset($validated['developer']);
+            unset($validated['priority']);
         }
 
         $oldStatus = $bug->status;
         $oldDeveloper = $bug->developer;
+        $oldPriority = $bug->priority;
 
         $bug->update($validated);
+
+        // Check if priority changed by QA or Admin
+        if (! empty($validated['priority']) && $oldPriority !== $bug->priority) {
+            $priorityLabels = ['p1' => 'P1 (Critical)', 'p2' => 'P2 (High)', 'p3' => 'P3 (Medium/Low)'];
+            $newPriorityLabel = $priorityLabels[$bug->priority] ?? strtoupper($bug->priority);
+
+            if (! empty($bug->developer)) {
+                $assignedDev = User::where('name', $bug->developer)->first();
+                if ($assignedDev && $assignedDev->id !== $user->id) {
+                    $assignedDev->notify(new BugNotification(
+                        title: 'Prioritas Bug Diperbarui',
+                        message: "{$user->name} mengubah prioritas bug #{$bug->id} ('{$bug->title}') menjadi {$newPriorityLabel}.",
+                        type: $bug->priority === 'p1' ? 'critical' : 'status_updated',
+                        bugId: $bug->id,
+                        icon: 'priority_high',
+                        badgeColor: $bug->priority === 'p1' ? 'error' : 'primary'
+                    ));
+                }
+            }
+
+            if ($bug->priority === 'p1') {
+                $otherDevs = User::where('role', 'developer')
+                    ->when(! empty($bug->developer), fn ($q) => $q->where('name', '!=', $bug->developer))
+                    ->where('id', '!=', $user->id)
+                    ->get();
+                foreach ($otherDevs as $dev) {
+                    $dev->notify(new BugNotification(
+                        title: 'Alert Bug Eskalasi ke P1 Kritis',
+                        message: "Bug #{$bug->id} ('{$bug->title}') dinaikkan ke prioritas P1 Critical oleh {$user->name}.",
+                        type: 'critical',
+                        bugId: $bug->id,
+                        icon: 'warning',
+                        badgeColor: 'error'
+                    ));
+                }
+            }
+        }
 
         // Check if developer assignment changed
         $newDeveloper = $bug->developer;
@@ -286,6 +360,10 @@ class BugController extends Controller
                     badgeColor: 'secondary'
                 ));
             }
+        }
+
+        if ($request->boolean('from_show')) {
+            return redirect()->route('bugs.show', $bug)->with('success', 'Status dan prioritas bug berhasil diperbarui.');
         }
 
         return redirect()->route('bugs')->with('success', 'Bug status updated successfully.');

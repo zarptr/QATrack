@@ -37,7 +37,7 @@
                         "inverse-primary": "#e4e4e7",
                         "on-surface": "#18181b",
                         "surface-tint": "#1e40af",
-                        "background": "#ffffff",
+                        "background": "#F8FAFF",
                         "surface-dim": "#f4f4f5",
                         "secondary-fixed-dim": "#e4e4e7",
                         "on-secondary-container": "#1e3a8a",
@@ -100,17 +100,19 @@
         }
     </script>
     <style>
+        body, main { background-color: #F8FAFF !important; }
+        .bg-surface-container-lowest, .bg-surface, .card-white { background-color: #ffffff !important; }
         .custom-shadow {
             box-shadow: 0 2px 4px rgba(0,0,0,0.04);
         }
     </style>
 </head>
-<body class="bg-surface font-body-md text-on-surface antialiased flex overflow-hidden">
+<body class="font-body-md text-on-surface antialiased flex overflow-hidden" style="background-color: #F8FAFF;">
     @include('layouts.sidebar')
     @include('layouts.header')
 
     <!-- Main Content -->
-    <main class="ml-sidebar-width mt-16 w-full h-[calc(100vh-64px)] overflow-y-auto bg-background p-section-padding">
+    <main class="ml-sidebar-width mt-16 w-full h-[calc(100vh-64px)] overflow-y-auto p-section-padding" style="background-color: #F8FAFF;">
         <div class="max-w-4xl mx-auto">
             <div class="mb-8">
                 <h2 class="text-display-lg font-display-lg" style="color:#1e3a8a">Report New Bug</h2>
@@ -130,7 +132,7 @@
             @endif
 
             <!-- Form -->
-            <form class="bg-surface-container-lowest rounded-xl custom-shadow border border-outline-variant/40 p-container-gap" action="{{ route('bugs.store') }}" method="POST" enctype="multipart/form-data">
+            <form class="bg-white rounded-xl shadow-sm border border-slate-200/80 p-container-gap" action="{{ route('bugs.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-6">
                     @if($selectedProject)
@@ -146,6 +148,7 @@
                                 <div>
                                     <span class="text-xs font-semibold text-secondary uppercase tracking-wider block">Project Folder</span>
                                     <h4 class="text-base font-bold text-primary">{{ $selectedProject->name }}</h4>
+                                    <p class="text-xs text-secondary mt-0.5">Dibuat oleh: <strong class="text-on-surface font-semibold">{{ $selectedProject->creator?->name ?? 'Sistem' }}</strong></p>
                                 </div>
                             </div>
                             <span class="text-xs px-2.5 py-1 rounded-full bg-blue-200/60 text-primary font-semibold">Otomatis Terkunci</span>
@@ -180,24 +183,28 @@
                                 />
                             </div>
                             <div>
-                                <label class="block font-label-md text-label-md text-on-surface mb-2" for="project_id">Project Folder</label>
-                                @if(isset($projects) && $projects->count() > 0)
-                                    <select id="project_id" name="project_id" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer">
-                                        <option value="">Pilih Folder Project...</option>
-                                        @foreach($projects as $proj)
-                                            <option value="{{ $proj->id }}" {{ old('project_id') == $proj->id ? 'selected' : '' }}>📁 {{ $proj->name }}</option>
-                                        @endforeach
-                                    </select>
-                                @else
+                                <label class="block font-label-md text-label-md text-on-surface mb-2" for="project_id">Project / Aplikasi <span class="text-error">*</span></label>
+                                <select id="project_id" name="project_id" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary cursor-pointer transition-shadow" onchange="handleProjectChange(this.value)">
+                                    <option value="">Pilih Project...</option>
+                                    @foreach($projects as $proj)
+                                        <option value="{{ $proj->id }}" {{ old('project_id') == $proj->id ? 'selected' : '' }}>{{ $proj->name }}{{ $proj->creator ? ' (oleh ' . $proj->creator->name . ')' : '' }}</option>
+                                    @endforeach
+                                    <option value="custom" {{ old('project') ? 'selected' : '' }}>+ Input Project Baru...</option>
+                                </select>
+                                <div id="custom-project-wrapper" class="{{ old('project') ? '' : 'hidden' }} mt-2">
                                     <input 
                                         class="w-full bg-surface-container-lowest border rounded-lg px-4 py-2.5 text-body-md focus:outline-none focus:ring-1 transition-shadow placeholder-outline border-outline-variant focus:border-primary focus:ring-primary" 
                                         id="project" 
                                         name="project" 
                                         value="{{ old('project') }}"
-                                        placeholder="Nama project" 
+                                        placeholder="Ketik nama project baru (contoh: Core Banking, POS System)" 
                                         type="text"
                                     />
-                                @endif
+                                </div>
+                                <p class="text-[11px] text-secondary mt-1.5 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[13px] text-primary">auto_awesome</span>
+                                    <span>Sistem otomatis mengelompokkan ke folder project masing-masing.</span>
+                                </p>
                             </div>
                         </div>
                     @endif
@@ -303,6 +310,21 @@
 
     <!-- File Upload Interaction Script -->
     <script>
+        function handleProjectChange(val) {
+            const wrapper = document.getElementById('custom-project-wrapper');
+            const input = document.getElementById('project');
+            if (!wrapper || !input) return;
+            if (val === 'custom') {
+                wrapper.classList.remove('hidden');
+                input.required = true;
+                input.focus();
+            } else {
+                wrapper.classList.add('hidden');
+                input.required = false;
+                input.value = '';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             const dropZone = document.getElementById('drop-zone');
             const fileInput = document.getElementById('attachment');
