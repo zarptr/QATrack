@@ -51,19 +51,20 @@
 <body class="h-full bg-white antialiased text-slate-900 selection:bg-[#1B2CC1]/15 selection:text-[#1B2CC1]">
     <div class="min-h-screen flex flex-col lg:flex-row">
 
-        <div class="w-full lg:w-[58%] xl:w-[60%] bg-[#F1F3FA] flex flex-col items-center justify-center p-8 sm:p-12 lg:p-14 order-1">
+        <!-- Illustration Panel -->
+        <div class="w-full lg:w-[58%] xl:w-[60%] bg-[#F1F3FA] flex flex-col items-center justify-center p-5 sm:p-10 lg:p-14 order-1">
             <div class="w-full max-w-md lg:max-w-lg xl:max-w-xl flex flex-col items-center justify-center text-center">
 
                 <img
                     src="{{ asset('images/logo.png') }}"
                     alt="QATrack"
-                    class="h-20 sm:h-24 md:h-28 lg:h-32 w-auto object-contain mb-6 sm:mb-8 transition-transform duration-300 hover:scale-[1.02]"
+                    class="h-14 sm:h-20 md:h-24 lg:h-32 w-auto object-contain mb-3 sm:mb-8 transition-transform duration-300 hover:scale-[1.02]"
                 />
 
                 <img
                     src="{{ asset('images/login-illustration.png') }}"
                     alt="QATrack Bug Tracking Illustration"
-                    class="w-full h-auto max-h-[300px] sm:max-h-[360px] lg:max-h-[420px] xl:max-h-[460px] object-contain drop-shadow-sm transition-transform duration-300 hover:scale-[1.01]"
+                    class="hidden sm:block w-full h-auto max-h-[240px] sm:max-h-[340px] lg:max-h-[420px] xl:max-h-[460px] object-contain drop-shadow-sm transition-transform duration-300 hover:scale-[1.01]"
                 />
             </div>
         </div>

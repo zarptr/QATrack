@@ -136,12 +136,12 @@
 
                                         <div class="flex items-center gap-1">
                                             @if(auth()->user()->role !== 'developer')
-                                                <a href="{{ route('bugs.create', ['project_id' => $project->id]) }}" class="p-1 text-secondary hover:text-primary hover:bg-blue-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100" title="Add Bug to {{ $project->name }}">
+                                                <a href="{{ route('bugs.create', ['project_id' => $project->id]) }}" class="p-1 text-secondary hover:text-primary hover:bg-blue-50 rounded-lg transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100" title="Add Bug to {{ $project->name }}">
                                                     <span class="material-symbols-outlined text-[18px]">add</span>
                                                 </a>
                                             @endif
                                             @if(auth()->user()->role === 'super_admin' || $project->created_by === auth()->id())
-                                                <form action="{{ route('projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus folder {{ $project->name }}?');" class="opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <form action="{{ route('projects.destroy', $project) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus folder {{ $project->name }}?');" class="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="p-1 text-secondary hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete Folder">

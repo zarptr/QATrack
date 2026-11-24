@@ -337,11 +337,11 @@
                     </div>
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-outline-variant/30 flex justify-end gap-4">
-                    <a href="{{ route('bugs') }}" class="px-6 py-2.5 rounded-button font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors flex items-center justify-center" type="button">
+                <div class="mt-8 pt-6 border-t border-outline-variant/30 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
+                    <a href="{{ route('bugs') }}" class="w-full sm:w-auto px-6 py-2.5 rounded-button font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors flex items-center justify-center" type="button">
                         Cancel
                     </a>
-                    <button class="px-6 py-2.5 rounded-button font-label-md text-label-md text-white shadow-sm hover:opacity-90 active:scale-95 transition-all cursor-pointer" style="background-color:#1e3a8a;" type="submit">
+                    <button class="w-full sm:w-auto px-6 py-2.5 rounded-button font-label-md text-label-md text-white shadow-sm hover:opacity-90 active:scale-95 transition-all cursor-pointer" style="background-color:#1e3a8a;" type="submit">
                         Submit Bug
                     </button>
                 </div>

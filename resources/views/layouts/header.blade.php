@@ -4,30 +4,30 @@
     $initialUnreadCount = $currentUser ? $currentUser->unreadNotifications()->count() : 0;
 @endphp
 
-<header class="h-16 fixed top-0 right-0 z-30 bg-surface border-b border-outline-variant flex justify-between items-center w-[calc(100%-260px)] px-grid-margin transition-all duration-200">
+<header class="h-16 fixed top-0 right-0 z-30 bg-surface border-b border-outline-variant flex justify-between items-center w-full lg:w-[calc(100%-260px)] px-3 sm:px-6 transition-all duration-200">
 
-    <div class="flex-1 flex items-center">
-        <button id="sidebar-toggle-btn" class="text-on-surface-variant hover:text-primary transition-all p-1.5 rounded-lg hover:bg-surface-container-low mr-3 flex items-center justify-center cursor-pointer active:scale-95 duration-100" title="Toggle Sidebar">
+    <div class="flex-1 flex items-center min-w-0 pr-2">
+        <button id="sidebar-toggle-btn" class="text-on-surface-variant hover:text-primary transition-all p-1.5 rounded-lg hover:bg-surface-container-low mr-2 sm:mr-3 flex items-center justify-center cursor-pointer active:scale-95 duration-100 shrink-0" title="Toggle Sidebar">
             <span class="material-symbols-outlined text-[22px]">menu</span>
         </button>
         @if (isset($breadcrumb))
-            <div class="flex items-center gap-2 text-on-surface-variant font-body-md">
-                <span class="font-bold text-on-surface">{{ $breadcrumb }}</span>
+            <div class="flex items-center gap-2 text-on-surface-variant font-body-md truncate">
+                <span class="font-bold text-on-surface text-sm sm:text-base truncate">{{ $breadcrumb }}</span>
             </div>
         @else
-            <div class="relative w-96 focus-within:ring-2 focus-within:ring-primary rounded-md transition-all">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
-                <input class="w-full bg-surface-container-low border border-outline-variant rounded-md py-2 pl-10 pr-4 text-body-md font-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary" placeholder="Search across QATrack Console..." type="text"/>
+            <div class="relative w-full max-w-[150px] sm:max-w-xs md:max-w-sm focus-within:ring-2 focus-within:ring-primary rounded-md transition-all">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px] sm:text-[20px]">search</span>
+                <input class="w-full bg-surface-container-low border border-outline-variant rounded-md py-1.5 sm:py-2 pl-9 sm:pl-10 pr-3 sm:pr-4 text-xs sm:text-body-md font-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary" placeholder="Search..." type="text"/>
             </div>
         @endif
     </div>
 
-    <div class="flex items-center gap-5">
-        <div class="flex items-center gap-2 relative">
+    <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+        <div class="flex items-center gap-1 sm:gap-2 relative">
 
             <div class="relative" id="notification-wrapper">
                 <button id="notification-bell-btn" type="button" class="text-on-surface-variant hover:text-primary hover:bg-surface-container-low p-2 rounded-xl transition-all relative flex items-center justify-center cursor-pointer active:scale-95 duration-100" title="Notifikasi" aria-label="Notifikasi" aria-expanded="false">
-                    <span class="material-symbols-outlined text-[24px]">notifications</span>
+                    <span class="material-symbols-outlined text-[22px] sm:text-[24px]">notifications</span>
 
                     <span id="notification-badge" class="{{ $initialUnreadCount > 0 ? '' : 'hidden' }} absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
@@ -35,7 +35,7 @@
                     </span>
                 </button>
 
-                <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 sm:w-[420px] bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col transition-all duration-200 origin-top-right">
+                <div id="notification-dropdown" class="hidden fixed sm:absolute inset-x-2 sm:inset-x-auto top-16 sm:top-auto sm:right-0 mt-2 sm:w-[420px] max-w-full bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col transition-all duration-200 origin-top-right">
 
                     <div class="p-4 border-b border-outline-variant/60 flex items-center justify-between bg-surface-container-low/40">
                         <div class="flex items-center gap-2">
@@ -136,10 +136,13 @@
         <div class="w-px h-6 bg-outline-variant"></div>
 
         <div class="relative" id="user-profile-wrapper">
-            <button id="user-profile-btn" type="button" class="flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-100" title="{{ $currentUser->name }}" aria-expanded="false">
-                <div class="text-right">
-                    <span class="text-on-surface font-semibold text-xs block leading-tight">{{ $currentUser->name }}</span>
-                    <span class="text-[10px] text-secondary font-medium uppercase tracking-wider">
+            <button id="user-profile-btn" type="button" class="flex items-center gap-2 px-1.5 sm:px-2.5 py-1.5 rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer active:scale-95 duration-100" title="{{ $currentUser->name }}" aria-expanded="false">
+                <div class="w-8 h-8 rounded-full bg-blue-100 text-primary flex items-center justify-center font-bold text-xs shrink-0">
+                    {{ strtoupper(substr($currentUser->name, 0, 1)) }}
+                </div>
+                <div class="text-right hidden sm:block">
+                    <span class="text-on-surface font-semibold text-xs block leading-tight max-w-[120px] truncate">{{ $currentUser->name }}</span>
+                    <span class="text-[10px] text-secondary font-medium uppercase tracking-wider block">
                         @if($currentUser->role === 'super_admin') Super Admin
                         @elseif($currentUser->role === 'support_dev') Support / QA
                         @else Developer @endif

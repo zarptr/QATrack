@@ -130,15 +130,15 @@
             </div>
         @endif
 
-        <div class="flex justify-between items-start mb-container-gap">
-            <div class="flex flex-col gap-2">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-container-gap">
+            <div class="flex flex-col gap-2 w-full md:w-auto">
                 <div class="flex items-center gap-3 text-label-md font-label-md text-secondary">
                     <a class="hover:text-primary transition-colors" href="{{ route('bugs') }}">Bugs</a>
                     <span class="material-symbols-outlined text-[16px]">chevron_right</span>
                     <span>#{{ 4000 + $bug->id }}</span>
                 </div>
                 <h2 class="text-display-lg font-display-lg" style="color:#1e3a8a">{{ $bug->title }}</h2>
-                <div class="flex items-center gap-4 mt-2">
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-2">
                     @if (strtolower($bug->priority) == 'p1')
                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error-container text-on-error-container font-label-md text-label-md">
                             <span class="w-2 h-2 rounded-full bg-error"></span> High Priority (P1)
@@ -207,13 +207,13 @@
                     @endif
                 </div>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 w-full md:w-auto">
                 @php
                     $role = auth()->user()->role;
                 @endphp
 
                 @if ($role === 'developer')
-                    <form action="{{ route('bugs.status.update', $bug) }}" method="POST" class="flex flex-wrap items-center gap-3 bg-white p-2 border border-slate-200/80 rounded-xl shadow-xs">
+                    <form action="{{ route('bugs.status.update', $bug) }}" method="POST" class="flex flex-wrap items-center gap-2 sm:gap-3 bg-white p-2.5 border border-slate-200/80 rounded-xl shadow-xs w-full md:w-auto">
                         @csrf
                         @method('PATCH')
                         <input type="hidden" name="from_show" value="1"/>
